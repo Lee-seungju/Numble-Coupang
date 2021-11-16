@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+<th:block th:if="${session.member eq null}">
+    <script>
+        top.alert("로그인이 필요한 서비스입니다.");
+        top.location.href = '/member/login';
+    </script>
+</th:block>
+<th:block th:unless="${session.member eq null}">
+    <button onclick="location.href = '/'">쿠팡</button>
+    <div class="menu">
+        <label><div>메뉴</div></label>
+        <ul>
+            <li><a href="#" class="item"><div>주문목록/배송조회</div></a></li>
+            <li><a href="/user/rocketWow" class="item"><div>와우 멤버쉽</div></a></li>
+            <li><a href="#" class="item"><div>할인쿠폰</div></a></li>
+            <li><a href="/user/editMyInfo" class="item"><div>개인정보 확인/수정</div></a></li>
+            <li><a href="/user/showDList" class="item"><div>배송지 관리</div></a></li>
+        </ul>
+    </div>
+    <div>
+        <h2>로켓와우 멤버십 관리</h2>
+        <th:block th:if="${session.member.rocket_membership} == true">
+            <span th:text="${session.member.username}"></span>님은 와우 회원입니다.
+        </th:block>
+        <th:block th:unless="${session.member.rocket_membership} == true">
+            <span th:text="${session.member.username}"></span>님은 와우 회원이 아닙니다.
+            <button onclick="location.href='/member/joinWow'">로켓와우 신청하기</button>
+        </th:block>
+    </div>
+</th:block>
+</body>
+</html>

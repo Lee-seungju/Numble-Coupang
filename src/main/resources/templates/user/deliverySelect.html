@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script th:inline="javascript">
+        function checkOnlyOne(chk) {
+            var obj = document.getElementsByName("select");
+            for(var i=0; i<obj.length; i++) {
+                if (obj[i] != chk) {
+                    obj[i].checked = false;
+                }
+            }
+        }
+        function saveSelect() {
+            var obj = document.getElementsByName("select");
+            opener.document.getElementById("who_take").value = "home";
+            if (obj[1].checked == true)
+                opener.document.getElementById("who_take").value = "human";
+            else if (obj[2].checked == true)
+                opener.document.getElementById("who_take").value = "office";
+            window.close();
+        }
+    </script>
+</head>
+<body>
+<th:block th:if="${session.member eq null}">
+    <script>
+        top.alert("로그인이 필요한 서비스입니다.");
+        top.location.href = '/member/login';
+    </script>
+</th:block>
+<th:block th:unless="${session.member eq null}">
+    <div>배송 요청사항</div>
+    <input type='checkbox' name="select" value="1" onclick="checkOnlyOne(this)" checked/> 문 앞
+    <br />
+    <input type='checkbox' name="select" value="2" onclick="checkOnlyOne(this)"/> 직접 받고 부재 시 문 앞
+    <br />
+    <input type='checkbox' name="select" value="3" onclick="checkOnlyOne(this)"/> 경비실
+    <button onclick="saveSelect()">동의하고 저장하기</button>
+</th:block>
+</body>
+</html>

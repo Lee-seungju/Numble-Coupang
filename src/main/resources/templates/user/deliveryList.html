@@ -1,0 +1,75 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+<th:block th:if="${session.member eq null}">
+    <script>
+        top.alert("로그인이 필요한 서비스입니다.");
+        top.location.href = '/member/login';
+    </script>
+</th:block>
+<th:block th:unless="${session.member eq null}">
+    <button onclick="location.href = '/'">쿠팡</button>
+    <div class="menu">
+        <label><div>메뉴</div></label>
+        <ul>
+            <li><a href="#" class="item"><div>주문목록/배송조회</div></a></li>
+            <li><a href="/user/rocketWow" class="item"><div>와우 멤버쉽</div></a></li>
+            <li><a href="#" class="item"><div>할인쿠폰</div></a></li>
+            <li><a href="/user/editMyInfo" class="item"><div>개인정보 확인/수정</div></a></li>
+            <li><a href="showDList" class="item"><div>배송지 관리</div></a></li>
+        </ul>
+    </div>
+    <table>
+        <thead>
+        </thead>
+        <tbody>
+        <tr th:each="data : ${delivery}" th:if="${data.main} == true">
+            <div>
+                <div>
+                    <div th:text="${data.name}"></div>
+                </div>
+                <div>
+                    <span>(기본 배송지)</span>
+                    <span th:if="${session.member.rocket_membership == true}">(로켓와우 가능)</span>
+                </div>
+            </div>
+            <div>
+                <div th:text="${data.address}"></div>
+                <div th:text="${data.phone_number}"></div>
+                <div th:switch="${data.who_take}">
+                    <div th:case="'human'">직접 받고 부재시 문 앞</div>
+                    <div th:case="'office'">경비실</div>
+                    <div th:case="*">문 앞</div>
+                </div>
+                <input type="hidden" for="who_take" id="who_take" name="who_take" th:value="${data.id}">
+            </div>
+            <div>-----------------------------------------------------</div>
+        </tr>
+        <tr th:each="data : ${delivery}" th:if="${data.main} == false">
+            <div>
+                <div>
+                    <div th:text="${data.name}"></div>
+                </div>
+                <div>
+                    <span th:if="${session.member.rocket_membership == true}">(로켓와우 가능)</span>
+                </div>
+            </div>
+            <div>
+                <div th:text="${data.address}"></div>
+                <div th:text="${data.phone_number}"></div>
+                <div th:switch="${data.who_take}">
+                    <div th:case="'human'">직접 받고 부재시 문 앞</div>
+                    <div th:case="'office'">경비실</div>
+                    <div th:case="*">문 앞</div>
+                </div>
+            </div>
+            <div>-----------------------------------------------------</div>
+        </tr>
+        </tbody>
+        <button onclick="location.href = 'createAddress'">+배송지 추가</button>
+    </table>
+</th:block>
+</body>
+</html>

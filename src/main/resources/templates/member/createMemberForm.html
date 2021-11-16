@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<script th:inline="javascript">
+    function NullCheck() {
+        var pass = document.getElementById("password").value;
+        var pass_n = document.getElementById("password_check").value;
+        var email = document.getElementById("email").value;
+        var username = document.getElementById("username").value;
+        var phoneNumber = document.getElementById("phoneNumber").value;
+
+        if (pass.length == 0 || pass_n.length == 0 || email.length == 0 || username.length == 0 || phoneNumber.length == 0)
+            return true;
+        return false;
+    }
+
+    function check() {
+        var pass = document.getElementById("password").value;
+        var pass_n = document.getElementById("password_check").value;
+        var check_box = document.getElementById("check");
+        var login_success = document.login_check;
+
+        if (check_box.checked == false) {
+            alert("비어있는 체크박스가 있습니다.")
+        }else if (NullCheck()) {
+            alert("입력받지 못한 항목이 있습니다.")
+        } else if (pass != pass_n) {
+            alert("비밀번호가 같지 않습니다.");
+        } else {
+            login_success.submit();
+        }
+    }
+
+</script>
+<body>
+<div class="container">
+    <form name="login_check" action="/member/new" method="post">
+        <h1>회원가입</h1>
+        <p>
+            <label for="email">아이디(이메일)</label>
+            <input type="text" id="email" name="email" placeholder="아이디(이메일)">
+        </p>
+        <p>
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" name="password" placeholder="비밀번호">
+        </p>
+        <p>
+            <label for="password">비밀번호 확인</label>
+            <input type="password" id="password_check" name="password_check" placeholder="비밀번호를 확인">
+        </p>
+        <p>
+            <label type="username">이름</label>
+            <input type="text" id="username" name="username" placeholder="이름">
+        </p>
+        <p>
+            <label type="phoneNumber">휴대폰 번호</label>
+            <input type="text" id="phoneNumber" name="phoneNumber" placeholder="휴대폰 번호">
+        </p>
+    </form>
+    <p>
+        <label>쿠팡 서비스약관에 동의해주세요.</label>
+        <label><input type="checkbox" id="check"> 모두 동의합니다.</label>
+    </p>
+    <button onclick="check()">동의하고 가입하기</button>
+</div> <!-- /container -->
+</body>
+</html>

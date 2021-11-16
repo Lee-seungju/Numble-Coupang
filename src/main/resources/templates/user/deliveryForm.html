@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script th:inline="javascript">
+        function moveChild() {
+            var setting = 'width=430,height=500,location=no,status=no,scrollbars=yes';
+            window.open('deliverySelect','배송 요청사항', setting);
+        }
+        function save() {
+            if (document.getElementById("check").checked == true)
+                document.getElementById("main").value = true;
+            else
+                document.getElementById("main").value = false;
+            document.add_delivery.submit();
+        }
+    </script>
+</head>
+<body>
+<th:block th:if="${session.member eq null}">
+    <script>
+        top.alert("로그인이 필요한 서비스입니다.");
+        top.location.href = '/member/login';
+    </script>
+</th:block>
+<th:block th:unless="${session.member eq null}">
+    <button onclick="location.href = '/'">쿠팡</button>
+    <form name="add_delivery" action="/user/deliveryForm" method="post">
+        <h1>배송지 추가</h1>
+        <p>
+            <label for="name">받는 사람</label>
+            <input type="text" id="name" name="name" placeholder="받는 사람">
+        </p>
+        <p>
+            <label for="address">주소지</label>
+            <input type="text" id="address" name="address" placeholder="주소지">
+        </p>
+        <p>
+            <label for="phone_number">휴대폰 번호</label>
+            <input type="text" id="phone_number" name="phone_number" placeholder="휴대폰 번호">
+        </p>
+        <input type="hidden" for="who_take" id="who_take" name="who_take">
+        <input type="hidden" for="main" id="main" name="main">
+    </form>
+    <p>
+        <button onclick="moveChild()">일반배송 정보를 선택해 주세요.</button>
+    </p>
+    <p>
+        <label><input type="checkbox" id="check">기본배송지로 저장.</label>
+    </p>
+    <button onclick="save()">저장</button>
+</th:block>
+</body>
+</html>
