@@ -11,8 +11,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Controller
 public class UserController {
@@ -34,8 +37,7 @@ public class UserController {
         ModelAndView mav = new ModelAndView("user/deliveryList");;
         if (session.getAttribute("member") == null)
             return mav;
-        List<Delivery> delivery = deliveryService.findList(((Member)session.getAttribute("member")).getId());
-        mav.addObject("delivery", delivery);
+        mav.addObject("delivery", deliveryService.sortMainDelivery(session));
         return mav;
     }
 
@@ -59,4 +61,11 @@ public class UserController {
 
     @GetMapping("user/canEdit")
     public String moveEditInfo() { return "user/editPersonalInfo"; }
+
+    @PostMapping("/user/wantChange")
+    public String changeDeliveryInfo(HttpServletRequest httpServletRequest, HttpSession session) {
+        String delivery = httpServletRequest.getParameter("data");
+        System.out.println(delivery);
+        return "redirect:/user/deliveryList";
+    }
 }

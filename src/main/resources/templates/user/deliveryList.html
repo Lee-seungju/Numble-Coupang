@@ -25,13 +25,13 @@
         <thead>
         </thead>
         <tbody>
-        <tr th:each="data : ${delivery}" th:if="${data.main} == true">
+        <tr th:each="data : ${delivery}">
             <div>
                 <div>
                     <div th:text="${data.name}"></div>
                 </div>
                 <div>
-                    <span>(기본 배송지)</span>
+                    <span th:if="${data.main == true}">(기본 배송지)</span>
                     <span th:if="${session.member.rocket_membership == true}">(로켓와우 가능)</span>
                 </div>
             </div>
@@ -43,27 +43,13 @@
                     <div th:case="'office'">경비실</div>
                     <div th:case="*">문 앞</div>
                 </div>
-                <input type="hidden" for="who_take" id="who_take" name="who_take" th:value="${data.id}">
-            </div>
-            <div>-----------------------------------------------------</div>
-        </tr>
-        <tr th:each="data : ${delivery}" th:if="${data.main} == false">
-            <div>
-                <div>
-                    <div th:text="${data.name}"></div>
-                </div>
-                <div>
-                    <span th:if="${session.member.rocket_membership == true}">(로켓와우 가능)</span>
-                </div>
-            </div>
-            <div>
-                <div th:text="${data.address}"></div>
-                <div th:text="${data.phone_number}"></div>
-                <div th:switch="${data.who_take}">
-                    <div th:case="'human'">직접 받고 부재시 문 앞</div>
-                    <div th:case="'office'">경비실</div>
-                    <div th:case="*">문 앞</div>
-                </div>
+                <form action="/user/wantChange" method="post">
+                    <input type="hidden" name="id" th:value="${data}">
+                    <input type="hidden" name="data" th:value="${data}">
+                    <input type="hidden" name="data" th:value="${data}">
+                    <input type="hidden" name="data" th:value="${data}">
+                    <button type="submit">수정</button>
+                </form>
             </div>
             <div>-----------------------------------------------------</div>
         </tr>

@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Transactional
 public class DeliveryServiceImpl implements DeliveryService {
@@ -30,6 +32,15 @@ public class DeliveryServiceImpl implements DeliveryService {
         checkMain(delivery, delivery.getMember_id(), delivery.getId());
 
         deliveryRepository.save(delivery);
+    }
+
+    @Override
+    public List<Delivery> sortMainDelivery(HttpSession session) {
+        Stream<Delivery> mainDelivery = (findList(((Member)session.getAttribute("member")).getId()))
+                .stream().filter(d -> d.isMain()==true);
+        Stream<Delivery> notMain = (findList(((Member)session.getAttribute("member")).getId()))
+                .stream().filter(d -> d.isMain()==false);
+        return Stream.concat(mainDelivery, notMain).collect(Collectors.toList());
     }
 
     private void checkMain(Delivery delivery, Long memberId, Long id) {
