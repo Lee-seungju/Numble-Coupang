@@ -13,7 +13,7 @@ public interface MemberService {
     void logout(HttpSession session);
     boolean join(MemberForm member);
     boolean checkPass(String pass, Object member);
-    Member changeMembership(Object member);
+    Member changeMembership(Object m);
     List<Member> findMembers();
     Optional<Member> findOne(Long memberId);
 }

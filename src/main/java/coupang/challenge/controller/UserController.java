@@ -1,10 +1,7 @@
 package coupang.challenge.controller;
 
-import coupang.challenge.data.Delivery;
-import coupang.challenge.data.Member;
 import coupang.challenge.form.DeliveryForm;
 import coupang.challenge.service.DeliveryService;
-import coupang.challenge.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,9 +10,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Stream;
 
 @Controller
 public class UserController {
@@ -23,7 +17,7 @@ public class UserController {
     private DeliveryService deliveryService;
 
     @Autowired
-    public UserController(DeliveryService deliveryService, MemberService memberService) {
+    public UserController(DeliveryService deliveryService) {
         this.deliveryService = deliveryService;
     }
 
@@ -41,12 +35,17 @@ public class UserController {
         return mav;
     }
 
-    @GetMapping("user/createAddress")
-    public String moveDCreate() { return "user/deliveryForm"; }
+    @GetMapping("user/createOrEditAddress")
+    public String moveDCreate(HttpSession session) {
+        if (session.getAttribute("delivery") == null)
+            session.setAttribute("delivery", deliveryService.makeNull(session));
+        return "user/deliveryForm";
+    }
 
     @PostMapping("user/deliveryForm")
     public String AddDelivery(HttpSession session, DeliveryForm deliveryForm) {
-        deliveryService.add(deliveryForm, session);
+        deliveryService.addOrChange(session.getAttribute("delivery"), deliveryForm, session);
+        session.removeAttribute("delivery");
         return "redirect:/user/showDList";
     }
 
@@ -64,8 +63,8 @@ public class UserController {
 
     @PostMapping("/user/wantChange")
     public String changeDeliveryInfo(HttpServletRequest httpServletRequest, HttpSession session) {
-        String delivery = httpServletRequest.getParameter("data");
-        System.out.println(delivery);
-        return "redirect:/user/deliveryList";
+        String deliveryId = httpServletRequest.getParameter("id");
+        session.setAttribute("delivery", deliveryService.findOne(Long.parseLong(deliveryId)).get());
+        return "redirect:/user/createOrEditAddress";
     }
 }

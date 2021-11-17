@@ -10,6 +10,8 @@ import java.util.Optional;
 public interface DeliveryRepository {
     void save(Delivery delivery);
 //    Optional<Delivery> viewDelivery(DeliveryForm deliveryForm);
+    void useMerge(Delivery delivery);
     List<Delivery> findById(Long memberId);
+    Optional<Delivery> findOne(Long deliveryId);
     List<Delivery> findAll();
 }

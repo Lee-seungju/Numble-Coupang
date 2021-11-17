@@ -27,7 +27,7 @@ public class MemberRepositoryImpl implements MemberRepository{
     }
 
     @Override
-    public void useMerage(Member member) {
+    public void useMerge(Member member) {
         em.merge(member);
     }
 

@@ -44,17 +44,14 @@
                     <div th:case="*">문 앞</div>
                 </div>
                 <form action="/user/wantChange" method="post">
-                    <input type="hidden" name="id" th:value="${data}">
-                    <input type="hidden" name="data" th:value="${data}">
-                    <input type="hidden" name="data" th:value="${data}">
-                    <input type="hidden" name="data" th:value="${data}">
+                    <input type="hidden" name="id" th:value="${data.id}">
                     <button type="submit">수정</button>
                 </form>
             </div>
             <div>-----------------------------------------------------</div>
         </tr>
         </tbody>
-        <button onclick="location.href = 'createAddress'">+배송지 추가</button>
+        <button onclick="location.href = 'createOrEditAddress'">+배송지 추가</button>
     </table>
 </th:block>
 </body>

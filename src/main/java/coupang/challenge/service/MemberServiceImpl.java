@@ -57,7 +57,7 @@ public class MemberServiceImpl implements MemberService {
     public Member changeMembership(Object m) {
         Member member = memberRepository.findById(((Member)m).getId()).get();
         member.setRocket_membership(true);
-        memberRepository.useMerage(member);
+        memberRepository.useMerge(member);
         return member;
     }
 

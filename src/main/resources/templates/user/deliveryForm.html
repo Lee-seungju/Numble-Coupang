@@ -6,12 +6,23 @@
             var setting = 'width=430,height=500,location=no,status=no,scrollbars=yes';
             window.open('deliverySelect','배송 요청사항', setting);
         }
+        function checkNull() {
+            var name = document.getElementById("name").value;
+            var address = document.getElementById("address").value;
+            var phone_number = document.getElementById("phone_number").value;
+            if (name.length == 0 || address.length == 0 || phone_number.length == 0)
+                return false;
+            return true;
+        }
         function save() {
             if (document.getElementById("check").checked == true)
                 document.getElementById("main").value = true;
             else
                 document.getElementById("main").value = false;
-            document.add_delivery.submit();
+            if (checkNull() == false)
+                alert("빈 칸이 있습니다.");
+            else
+                document.add_delivery.submit();
         }
     </script>
 </head>
@@ -28,24 +39,24 @@
         <h1>배송지 추가</h1>
         <p>
             <label for="name">받는 사람</label>
-            <input type="text" id="name" name="name" placeholder="받는 사람">
+            <input type="text" id="name" name="name" th:value="${session.delivery.name}" placeholder="받는 사람">
         </p>
         <p>
             <label for="address">주소지</label>
-            <input type="text" id="address" name="address" placeholder="주소지">
+            <input type="text" id="address" name="address" th:value="${session.delivery.address}" placeholder="주소지">
         </p>
         <p>
             <label for="phone_number">휴대폰 번호</label>
-            <input type="text" id="phone_number" name="phone_number" placeholder="휴대폰 번호">
+            <input type="text" id="phone_number" name="phone_number" th:value="${session.delivery.phone_number}" placeholder="휴대폰 번호">
         </p>
-        <input type="hidden" for="who_take" id="who_take" name="who_take">
+        <input type="hidden" for="who_take" id="who_take" name="who_take" value="home">
         <input type="hidden" for="main" id="main" name="main">
     </form>
     <p>
         <button onclick="moveChild()">일반배송 정보를 선택해 주세요.</button>
     </p>
     <p>
-        <label><input type="checkbox" id="check">기본배송지로 저장.</label>
+        <label><input type="checkbox" id="check" th:checked="${session.delivery.main}">기본배송지로 저장.</label>
     </p>
     <button onclick="save()">저장</button>
 </th:block>

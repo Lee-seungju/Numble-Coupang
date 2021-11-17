@@ -2,6 +2,7 @@ package coupang.challenge.repository;
 
 import coupang.challenge.data.Delivery;
 import coupang.challenge.data.Member;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -21,10 +22,21 @@ public class DeliveryRepositoryImpl implements DeliveryRepository{
     }
 
     @Override
+    public void useMerge(Delivery delivery) {
+        em.merge(delivery);
+    }
+
+
+    @Override
     public List<Delivery> findById(Long memberId) {
         return em.createQuery("select d from Delivery d where d.member_id=:memberId", Delivery.class)
                 .setParameter("memberId", memberId)
                 .getResultList();
+    }
+
+    @Override
+    public Optional<Delivery> findOne(Long deliveryId) {
+        return Optional.ofNullable(em.find(Delivery.class, deliveryId));
     }
 
     @Override
