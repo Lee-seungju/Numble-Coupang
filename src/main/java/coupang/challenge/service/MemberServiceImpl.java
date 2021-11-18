@@ -6,6 +6,8 @@ import coupang.challenge.form.MemberForm;
 import coupang.challenge.repository.MemberRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Optional;
@@ -39,18 +41,14 @@ public class MemberServiceImpl implements MemberService {
     public boolean join(MemberForm form) {
         if (emailCheck(form.getEmail()) == false)
             return false;
-        Member member = new Member();
-        member.setEmail(form.getEmail());
-        member.setPassword(form.getPassword());
-        member.setUsername(form.getUsername());
-        member.setPhone_number(form.getPhoneNumber());
-        memberRepository.save(member);
+        memberRepository.makeNew(form);
         return true;
     }
 
     @Override
-    public boolean checkPass(String pass, Object member) {
-        return pass.equals(((Member)member).getPassword());
+    public boolean checkPass(HttpServletRequest httpServletRequest, HttpSession session) {
+        return httpServletRequest.getParameter("password").
+                equals((memberRepository.getMemberFromSession(session)).getPassword());
     }
 
     @Override
@@ -85,4 +83,32 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Optional<Member> findOne(Long memberId) { return memberRepository.findById(memberId); }
+
+    @Override
+    public void changePass(HttpServletRequest httpServletRequest, HttpSession session) {
+        Member member = (Member)session.getAttribute("member");
+        member.setPassword(httpServletRequest.getParameter("nPassword"));
+        memberRepository.useMerge(member);
+    }
+
+    @Override
+    public void changeEmail(HttpServletRequest httpServletRequest, HttpSession session) {
+        Member member = (Member)session.getAttribute("member");
+        member.setEmail(httpServletRequest.getParameter("Email"));
+        memberRepository.useMerge(member);
+    }
+
+    @Override
+    public void changeUsername(HttpServletRequest httpServletRequest, HttpSession session) {
+        Member member = memberRepository.getMemberFromSession(session);
+        member.setUsername(httpServletRequest.getParameter("Username"));
+        memberRepository.useMerge(member);
+    }
+
+    @Override
+    public void changePhone(HttpServletRequest httpServletRequest, HttpSession session) {
+        Member member = memberRepository.getMemberFromSession(session);
+        member.setPhone_number(httpServletRequest.getParameter("Phone"));
+        memberRepository.useMerge(member);
+    }
 }

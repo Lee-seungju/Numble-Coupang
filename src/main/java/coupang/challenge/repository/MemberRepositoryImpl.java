@@ -2,8 +2,10 @@ package coupang.challenge.repository;
 
 import coupang.challenge.form.LoginForm;
 import coupang.challenge.data.Member;
+import coupang.challenge.form.MemberForm;
 
 import javax.persistence.EntityManager;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,5 +51,20 @@ public class MemberRepositoryImpl implements MemberRepository{
     public List<Member> findAll() {
         return em.createQuery("select m from Member m", Member.class)
                 .getResultList();
+    }
+
+    @Override
+    public Member getMemberFromSession(HttpSession session) {
+        return (Member)session.getAttribute("member");
+    }
+
+    @Override
+    public void makeNew(MemberForm form) {
+        Member member = new Member();
+        member.setEmail(form.getEmail());
+        member.setPassword(form.getPassword());
+        member.setUsername(form.getUsername());
+        member.setPhone_number(form.getPhoneNumber());
+        save(member);
     }
 }

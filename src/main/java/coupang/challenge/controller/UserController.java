@@ -1,6 +1,8 @@
 package coupang.challenge.controller;
 
+import coupang.challenge.data.Message;
 import coupang.challenge.form.DeliveryForm;
+import coupang.challenge.service.CouponService;
 import coupang.challenge.service.DeliveryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,10 +17,12 @@ import javax.servlet.http.HttpSession;
 public class UserController {
 
     private DeliveryService deliveryService;
+    private CouponService couponService;
 
     @Autowired
-    public UserController(DeliveryService deliveryService) {
+    public UserController(DeliveryService deliveryService, CouponService couponService) {
         this.deliveryService = deliveryService;
+        this.couponService = couponService;
     }
 
     @GetMapping("user")
@@ -28,7 +32,7 @@ public class UserController {
 
     @GetMapping("/user/showDList")
     public ModelAndView moveDList(HttpSession session) {
-        ModelAndView mav = new ModelAndView("user/deliveryList");;
+        ModelAndView mav = new ModelAndView("user/deliveryList");
         if (session.getAttribute("member") == null)
             return mav;
         mav.addObject("delivery", deliveryService.sortMainDelivery(session));
@@ -37,8 +41,7 @@ public class UserController {
 
     @GetMapping("user/createOrEditAddress")
     public String moveDCreate(HttpSession session) {
-        if (session.getAttribute("delivery") == null)
-            session.setAttribute("delivery", deliveryService.makeNull(session));
+        deliveryService.makeNull(session);
         return "user/deliveryForm";
     }
 
@@ -48,9 +51,6 @@ public class UserController {
         session.removeAttribute("delivery");
         return "redirect:/user/showDList";
     }
-
-    @GetMapping("user/deliverySelect")
-    public String moveDS() { return "user/deliverySelect"; }
 
     @GetMapping("/user/rocketWow")
     public String moveWow() { return "user/rocketMembership"; }
@@ -64,7 +64,27 @@ public class UserController {
     @PostMapping("/user/wantChange")
     public String changeDeliveryInfo(HttpServletRequest httpServletRequest, HttpSession session) {
         String deliveryId = httpServletRequest.getParameter("id");
-        session.setAttribute("delivery", deliveryService.findOne(Long.parseLong(deliveryId)).get());
+        deliveryService.setSessionById(session, Long.parseLong(deliveryId));
         return "redirect:/user/createOrEditAddress";
+    }
+
+    @GetMapping("/user/coupon")
+    public ModelAndView moveCouponPage(HttpSession session) {
+        ModelAndView mav = new ModelAndView("user/couponForm");
+        if (session.getAttribute("member") == null)
+            return mav;
+        mav.addObject("coupon", couponService.searchCoupon(session));
+        return mav;
+    }
+
+    @PostMapping("/user/addCoupon")
+    public ModelAndView addCoupon(HttpServletRequest httpServletRequest, HttpSession session) {
+        ModelAndView mav = new ModelAndView("Message");
+        String couponNum = httpServletRequest.getParameter("coupon_num");
+        if (couponService.addCouponToMember(couponNum, session) == false)
+            mav.addObject("data", new Message("쿠폰 번호가 맞지 않거나 이미 등록된 쿠폰입니다.", "/user/coupon"));
+        else
+            mav.addObject("data", new Message("쿠폰을 등록하였습니다.", "/user/coupon"));
+        return mav;
     }
 }

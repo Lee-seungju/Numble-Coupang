@@ -1,0 +1,135 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script th:inline="javascript">
+        function move_next(next) {
+            if (next.value.length == 4 && document.getElementById(next.id + "0") != null)
+                document.getElementById(next.id + "0").focus();
+        }
+        function addCoupon() {
+            var coupon_num = document.getElementById("coupon_num");
+            var couponName = "couponNum0";
+            while (document.getElementById(couponName) != null) {
+                coupon_num.value += document.getElementById(couponName).value;
+                couponName += "0";
+            }
+
+            document.add_coupon.submit();
+        }
+        function showCan() {
+            for(var i = 0; i<4; i++) {
+                if (document.getElementById("can" + i) != null)
+                    document.getElementById("can" + i.toString()).style.display = "block";
+                if (document.getElementById("use" + i) != null)
+                    document.getElementById("use" + i.toString()).style.display = "none";
+            }
+        }
+        function showEnd() {
+            for(var i = 0; i<4; i++) {
+                if (document.getElementById("can" + i) != null)
+                    document.getElementById("can" + i.toString()).style.display = "none";
+                if (document.getElementById("use" + i) != null)
+                    document.getElementById("use" + i.toString()).style.display = "block";
+            }
+        }
+    </script>
+</head>
+<body>
+<th:block th:if="${session.member eq null}">
+    <script>
+        top.alert("로그인이 필요한 서비스입니다.");
+        top.location.href = '/member/login';
+    </script>
+</th:block>
+<th:block th:unless="${session.member eq null}">
+    <button onclick="location.href = '/'">쿠팡</button>
+    <div class="menu">
+        <label><div>메뉴</div></label>
+        <ul>
+            <li><a href="#" class="item"><div>주문목록/배송조회</div></a></li>
+            <li><a href="/user/rocketWow" class="item"><div>와우 멤버쉽</div></a></li>
+            <li><a href="/user/coupon" class="item"><div>할인쿠폰</div></a></li>
+            <li><a href="/user/editMyInfo" class="item"><div>개인정보 확인/수정</div></a></li>
+            <li><a href="/user/showDList" class="item"><div>배송지 관리</div></a></li>
+        </ul>
+    </div>
+    <table>
+        <thead>
+        </thead>
+        <div>
+            <div>
+                <span>
+                    <h2>할인쿠폰 교환권 코드 등록</h2>
+                </span>
+            </div>
+            <div>
+                <span>
+                    <input type="text" maxlength="4" autocomplete="off" id="couponNum0" value="" onkeyup="move_next(this)">
+                    <input type="text" maxlength="4" autocomplete="off" id="couponNum00" value="" onkeyup="move_next(this)">
+                    <input type="text" maxlength="4" autocomplete="off" id="couponNum000" value="" onkeyup="move_next(this)">
+                    <input type="text" maxlength="4" autocomplete="off" id="couponNum0000" value="")>
+                    <form name="add_coupon" action="/user/addCoupon" method="post">
+                        <input type="hidden" id="coupon_num" name="coupon_num">
+                    </form>
+                </span>
+                <div></div>
+                <button onclick="addCoupon()">
+                    <span>
+                        <h3>입력하기</h3>
+                    </span>
+                </button>
+            </div>
+        </div>
+        <div>
+            <button onclick="showCan()">
+                <span>
+                    <h3>사용가능 쿠폰</h3>
+                </span>
+            </button>
+            <button onclick="showEnd()">
+                <span>
+                    <h3>만료 쿠폰</h3>
+                </span>
+            </button>
+        </div>
+            <div><table>
+                <colgroup>
+                    <col><col>
+                    <col><col>
+                    <col></colgroup>
+                <thead>
+                <tr>
+                    <th>쿠폰명 | </th>
+                    <th>할인액 | </th>
+                    <th>사용조건 | </th>
+                    <th>유효기간</th>
+                </tr></thead>
+                <th:block th:unless="${#lists.isEmpty(coupon)}">
+                    <tr th:each="d : ${coupon}" th:if="${d.use_coupon == false}">
+                        <tbody>
+                            <td>
+                                <th th:text="${d.name}" id="can0"></th>
+                                <th th:text="${d.discount}" id="can1">원</th>
+                                <th th:text="${d.if_buy}" id="can2">원 이상 구매시</th>
+                                <th th:text="${d.validity}" id="can3"></th>
+                            </td>
+                        </tbody>
+                    </tr>
+                    <tr th:each="d : ${coupon}" th:if="${d.use_coupon == true}">
+                        <tbody>
+                        <td>
+                        <th th:text="${d.name}" id="use0" style="display:none"></th>
+                        <th th:text="${d.discount}" id="use1" style="display:none">원</th>
+                        <th th:text="${d.if_buy}" id="use2" style="display:none">원 이상 구매시</th>
+                        <th th:text="${d.validity}" id="use3" style="display:none"></th>
+                        </td>
+                        </tbody>
+                    </tr>
+                </th:block>
+            </table>
+            <div>-----------------------------------------------------</div>
+            </div>
+    </table>
+</th:block>
+</body>
+</html>

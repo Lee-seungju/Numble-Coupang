@@ -1,12 +1,7 @@
 package coupang.challenge;
 
-import coupang.challenge.repository.DeliveryRepository;
-import coupang.challenge.repository.DeliveryRepositoryImpl;
-import coupang.challenge.repository.MemberRepositoryImpl;
-import coupang.challenge.repository.MemberRepository;
-import coupang.challenge.service.DeliveryService;
-import coupang.challenge.service.DeliveryServiceImpl;
-import coupang.challenge.service.MemberServiceImpl;
+import coupang.challenge.repository.*;
+import coupang.challenge.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,5 +35,11 @@ public class Springconfig {
     public DeliveryRepository deliveryRepository() { return new DeliveryRepositoryImpl(em); }
 
     @Bean
-    public DeliveryService deliveryService() { return new DeliveryServiceImpl(deliveryRepository()); }
+    public DeliveryService deliveryService() { return new DeliveryServiceImpl(deliveryRepository(), memberRepository()); }
+
+    @Bean
+    public CouponRepository couponRepository() { return new CouponRepositoryImpl(em); }
+
+    @Bean
+    public CouponService couponService() { return new CouponServiceImpl(couponRepository(), memberRepository()); }
 }

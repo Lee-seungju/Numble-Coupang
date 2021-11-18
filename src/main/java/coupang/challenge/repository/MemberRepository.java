@@ -2,7 +2,9 @@ package coupang.challenge.repository;
 
 import coupang.challenge.form.LoginForm;
 import coupang.challenge.data.Member;
+import coupang.challenge.form.MemberForm;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,4 +15,6 @@ public interface MemberRepository {
     Optional<Member> findById(Long memberId);
     Optional<Member> findByEmail(String email);
     List<Member> findAll();
+    Member getMemberFromSession(HttpSession session);
+    void makeNew(MemberForm form);
 }

@@ -73,14 +73,42 @@ public class MemberController {
     @PostMapping("/member/check")
     public ModelAndView checkPass(HttpServletRequest httpServletRequest, HttpSession session) {
         ModelAndView mav = new ModelAndView();
-        String pass = httpServletRequest.getParameter("password");
-        boolean check = memberService.checkPass(pass, session.getAttribute("member"));
-        if (check == true) {
+        if (memberService.checkPass(httpServletRequest, session) == true)
             mav.setViewName("user/editPersonalInfo");
-        } else {
+        else {
             mav.setViewName("Message");
             mav.addObject("data", new Message("비밀번호가 맞지 않습니다.", "../user/editMyInfo"));
         }
         return mav;
+    }
+
+    @PostMapping("/member/passCheck")
+    public ModelAndView checkPassAndEdit(HttpServletRequest httpServletRequest, HttpSession session) {
+        ModelAndView mav = new ModelAndView("Message");
+        if (memberService.checkPass(httpServletRequest, session) == true) {
+            memberService.changePass(httpServletRequest, session);
+            mav.addObject("data", new Message("비밀번호가 변경되었습니다.", "../user/canEdit"));
+        } else {
+            mav.addObject("data", new Message("현재 비밀번호가 맞지 않습니다.", "../user/canEdit"));
+        }
+        return mav;
+    }
+
+    @PostMapping("/member/changeEmail")
+    public String changeEmail(HttpServletRequest httpServletRequest, HttpSession session) {
+        memberService.changeEmail(httpServletRequest, session);
+        return "redirect:/user/canEdit";
+    }
+
+    @PostMapping("/member/changeUsername")
+    public String changeUsername(HttpServletRequest httpServletRequest, HttpSession session) {
+        memberService.changeUsername(httpServletRequest, session);
+        return "redirect:/user/canEdit";
+    }
+
+    @PostMapping("/member/changePhone")
+    public String changePhone(HttpServletRequest httpServletRequest, HttpSession session) {
+        memberService.changePhone(httpServletRequest, session);
+        return "redirect:/user/canEdit";
     }
 }

@@ -1,6 +1,45 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <script th:inline="javascript">
+        function passNullCheck() {
+            var password = document.getElementById("password").value;
+            var nPassword = document.getElementById("nPassword").value;
+            var nCheck = document.getElementById("nCheckPassword").value;
+            if (password.length == 0 || nPassword.length == 0 || nCheck.length == 0)
+                return false;
+            return true;
+        }
+        function passCheck() {
+            if (passNullCheck() == false)
+                alert("빈 칸이 존재합니다.");
+            else if (document.getElementById("nPassword").value != document.getElementById("nCheckPassword").value)
+                alert("새로운 비밀번호가 같지 않습니다.");
+            else if (document.getElementById("password").value == document.getElementById("nPassword").value)
+                alert("비밀번호가 이전 비밀번호과 같습니다.");
+            else
+                document.password_check.submit();
+        }
+        function changeButton(button) {
+            button.style.display = "none";
+            document.getElementById(button.id + "Cancel").style.display = "block";
+            document.getElementById(button.id.replace('change','')).style.display = "block";
+            document.getElementById(button.id.replace('change','') + "Button").style.display = "block";
+        }
+
+        function cancelButton(button) {
+            button.style.display = "none";
+            document.getElementById(button.id.replace('Cancel','')).style.display = "block";
+            document.getElementById(button.id.replace('Cancel','').replace('change','')).style.display = "none";
+            document.getElementById(button.id.replace('Cancel','').replace('change','') + "Button").style.display = "none";
+        }
+        function nullCheck(form, input) {
+            if (document.getElementById(input).value.length == 0)
+                alert("내용이 비어있습니다.");
+            else
+                document.getElementById(form).submit();
+        }
+    </script>
 </head>
 <body>
 <th:block th:if="${session.member eq null}">
@@ -16,7 +55,7 @@
         <ul>
             <li><a href="#" class="item"><div>주문목록/배송조회</div></a></li>
             <li><a href="/user/rocketWow" class="item"><div>와우 멤버쉽</div></a></li>
-            <li><a href="#" class="item"><div>할인쿠폰</div></a></li>
+            <li><a href="/user/coupon" class="item"><div>할인쿠폰</div></a></li>
             <li><a href="/user/editMyInfo" class="item"><div>개인정보 확인/수정</div></a></li>
             <li><a href="/user/showDList" class="item"><div>배송지 관리</div></a></li>
         </ul>
@@ -28,21 +67,51 @@
             <th>아이디(이메일)</th>
             <td th:text="${session.member.getEmail()}"></td>
             <td>
-                <button onclick="changeEmail()">이메일 변경</button>
+                <button id="changeEmail" style="display:block" onclick="changeButton(this)">이메일 변경</button>
+                <button id="changeEmailCancel" style="display:none" onclick="cancelButton(this)">이메일 변경취소</button>
+            </td>
+        </tr>
+        <tr>
+            <th></th>
+            <form id="changeEmailForm" name="changeEmailForm" action="/member/changeEmail" method="post">
+                <td>
+                    <input type="text" id="Email" name="Email" th:value="${session.member.email}" style="display:none">
+            </form>
+            <button onclick="nullCheck('changeEmailForm', 'Email')" id="EmailButton" style="display:none">변경하기</button>
             </td>
         </tr>
         <tr>
             <th>이름</th>
             <td th:text="${session.member.getUsername()}"></td>
             <td>
-                <button onclick="changeUsername()">이름 변경</button>
+                <button id="changeUsername" style="display:block" onclick="changeButton(this)">이름 변경</button>
+                <button id="changeUsernameCancel" style="display:none" onclick="cancelButton(this)">이름 변경취소</button>
+            </td>
+        </tr>
+        <tr>
+            <th></th>
+            <form id="changeUsernameForm" name="changeUsernameForm" action="/member/changeUsername" method="post">
+                <td>
+                    <input type="text" id="Username" name="Username" th:value="${session.member.username}" style="display:none">
+            </form>
+            <button onclick="nullCheck('changeUsernameForm', 'Username')" id="UsernameButton" style="display:none">변경하기</button>
             </td>
         </tr>
         <tr>
             <th>휴대폰 번호</th>
             <td th:text="${session.member.getPhone_number()}"></td>
             <td>
-                <button onclick="changePhoneNumber()">휴대폰 번호 변경</button>
+                <button id="changePhone" style="display:block" onclick="changeButton(this)">휴대폰 번호 변경</button>
+                <button id="changePhoneCancel" style="display:none" onclick="cancelButton(this)">휴대폰 번호 변경취소</button>
+            </td>
+        </tr>
+        <tr>
+            <th></th>
+            <form id="changePhoneForm" name="changePhoneForm" action="/member/changePhone" method="post">
+                <td>
+                    <input type="text" id="Phone" name="Phone" th:value="${session.member.phone_number}" style="display:none">
+            </form>
+            <button onclick="nullCheck('changePhoneForm', 'Phone')" id="PhoneButton" style="display:none">변경하기</button>
             </td>
         </tr>
         <tr>
@@ -58,7 +127,7 @@
                 </form>
             </td>
             <td>
-                <button onclick="password_check.submit()">비밀번호 변경</button>
+                <button onclick="passCheck()">비밀번호 변경</button>
             </td>
         </tr>
         <tr>
