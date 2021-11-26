@@ -1,0 +1,143 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        a { text-decoration:none }
+        li{
+            list-style:none;
+        }
+        input[type=radio] {
+            display:none;
+            margin:10px;
+        }
+        nav{
+            margin: 0;
+            padding: 0;
+            width: 200px;
+            background-color: #f1f1f1;
+        }
+        .cate input {
+            display: block;
+            color: #000;
+            padding: 8px 16px;
+        }
+    </style>
+    <script th:inline="javascript">
+        function checkRocket() {
+            var check = (document.getElementsByName("rocket"))[0].checked;
+            if (check == true) {
+                document.getElementById("rocketOn").style.display="";
+                document.getElementById("rocketOff").style.display="none";
+            }
+            else {
+                document.getElementById("rocketOn").style.display="none";
+                document.getElementById("rocketOff").style.display="";
+            }
+        }
+    </script>
+</head>
+<body>
+    <button onclick="location.href = '/'">쿠팡</button>
+    <div>
+        <form name="search_product" action="/product/search" method="post">
+            <input type="text" id="search" name="search">
+            <button>
+                <span>검색하기</span>
+            </button>
+        </form>
+    </div>
+    <nav>
+        <label class="cate">
+            <input type="checkbox" name="rocket" onclick="checkRocket()">로켓상품만 보기
+        </label>
+    </nav>
+    <div>
+        <ul>
+            <li style="float: left; padding: 5px 20px; background-color: #eee">
+                <a href="/product/salePriceAsc" id="sorter-salePriceAsc">낮은 가격순</a>
+            </li>
+            <li style="float: left; padding: 5px 20px; background-color: #eee">
+                <a href="/product/salePriceDesc" id="sorter-salePriceDesc">높은 가격순</a>
+            </li>
+            <li style="float: left; padding: 5px 20px; background-color: #eee">
+                <a href="/product/saleCountDesc" id="sorter-saleCountDesc">판매량순</a>
+            </li>
+            <li style="padding: 5px 20px; background-color: #eee">
+                <a href="/product/latestAsc" id="sorter-latestAsc">최신순</a>
+            </li>
+        </ul>
+    </div>
+<div>
+    <th:block th:if="${session.result != null and !session.result.isEmpty()}">
+        <div id="rocketOff">
+            <li th:each="data: ${session.result}">
+                <dl>
+                    <dt class="image">
+        <!--                onclick= 이미지 클릭시 이동하도록 설정해야됨-->
+                        <img th:src="${data.thumbnail_url}" style="width:100px; height:100px;">
+                    </dt>
+                    <dd>
+                        <div>
+                            <div th:text="${data.title}">상품이름</div>
+                            <div>
+                                <div>
+                                    <em>
+                                        <span th:text="${data.price}">price</span>원
+                                    </em>
+                                    <th:block th:if="${data.rocket_shopping == true}">
+                                        <span>(로켓배송 상품입니다.)</span>
+                                    </th:block>
+                                    <th:block th:unless="${data.rocket_shopping == true}">
+                                        <span></span>
+                                    </th:block>
+                                </div>
+                            </div>
+                            <div>
+                                <div>
+                                    평점<span th:text="${data.rate}">rate</span>
+                                    (<span th:text="${data.rate_number}">rateNumber</span>)
+                                </div>
+                            </div>
+                        </div>
+                    </dd>
+                </dl>
+            </li>
+        </div>
+        <div id="rocketOn" style="display: none">
+            <li th:each="data: ${session.result}" th:if="${data.rocket_shopping == true}">
+                <dl>
+                    <dt class="image">
+                        <!--                onclick= 이미지 클릭시 이동하도록 설정해야됨-->
+                        <img th:src="${data.thumbnail_url}" style="width:100px; height:100px;">
+                    </dt>
+                    <dd>
+                        <div>
+                            <div th:text="${data.title}">상품이름</div>
+                            <div>
+                                <div>
+                                    <em>
+                                        <span th:text="${data.price}">price</span>원
+                                    </em>
+                                    <th:block th:if="${data.rocket_shopping == true}">
+                                        <span>(로켓배송 상품입니다.)</span>
+                                    </th:block>
+                                    <th:block th:unless="${data.rocket_shopping == true}">
+                                        <span></span>
+                                    </th:block>
+                                </div>
+                            </div>
+                            <div>
+                                <div>
+                                    평점<span th:text="${data.rate}">rate</span>
+                                    (<span th:text="${data.rate_number}">rateNumber</span>)
+                                </div>
+                            </div>
+                        </div>
+                    </dd>
+                </dl>
+            </li>
+        </div>
+    </th:block>
+</div>
+</body>
+</html>

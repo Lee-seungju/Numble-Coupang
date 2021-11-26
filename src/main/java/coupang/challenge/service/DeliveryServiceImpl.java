@@ -16,25 +16,22 @@ import java.util.stream.Stream;
 @Transactional
 public class DeliveryServiceImpl implements DeliveryService {
 
-    private DeliveryRepository deliveryRepository;
-    private MemberRepository memberRepository;
+    private final DeliveryRepository deliveryRepository;
 
-    public DeliveryServiceImpl(DeliveryRepository deliveryRepository, MemberRepository memberRepository) {
+    public DeliveryServiceImpl(DeliveryRepository deliveryRepository) {
         this.deliveryRepository = deliveryRepository;
-        this.memberRepository = memberRepository;
     }
 
     @Override
-    public void addOrChange(Object delivery, DeliveryForm deliveryForm, HttpSession session) {
-        deliveryRepository.insertData(delivery, deliveryForm,
-                memberRepository.getMemberFromSession(session).getId());
+    public void addOrChange(Object delivery, DeliveryForm deliveryForm, Long memberId) {
+        deliveryRepository.insertData(delivery, deliveryForm, memberId);
     }
 
     @Override
-    public List<Delivery> sortMainDelivery(HttpSession session) {
-        Stream<Delivery> mainDelivery = (deliveryRepository.findById(memberRepository.getMemberFromSession(session).getId()))
+    public List<Delivery> sortMainDelivery(Long memberId) {
+        Stream<Delivery> mainDelivery = (deliveryRepository.findById(memberId))
                 .stream().filter(d -> d.isMain()==true);
-        Stream<Delivery> notMain = (deliveryRepository.findById(memberRepository.getMemberFromSession(session).getId()))
+        Stream<Delivery> notMain = (deliveryRepository.findById(memberId))
                 .stream().filter(d -> d.isMain()==false);
         return Stream.concat(mainDelivery, notMain).collect(Collectors.toList());
     }

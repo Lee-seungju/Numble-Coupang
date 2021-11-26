@@ -8,8 +8,8 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 
 public interface DeliveryService {
-    void addOrChange(Object delivery, DeliveryForm deliveryForm, HttpSession session);
-    List<Delivery> sortMainDelivery(HttpSession session);
+    void addOrChange(Object delivery, DeliveryForm deliveryForm, Long memberId);
+    List<Delivery> sortMainDelivery(Long memberId);
     void makeNull(HttpSession session);
     void setSessionById(HttpSession session, Long id);
 }

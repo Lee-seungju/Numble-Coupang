@@ -42,7 +42,7 @@ public class CouponRepositoryImpl implements CouponRepository{
         List<Coupon> result = em.createQuery("select m from Coupon m where m.number = :number", Coupon.class)
                 .setParameter("number", number)
                 .getResultList();
-        return result.stream().findAny();
+        return  result.stream().findAny();
     }
 
     @Override
@@ -78,7 +78,7 @@ public class CouponRepositoryImpl implements CouponRepository{
         List<Coupon> result = em.createQuery("select m from Coupon m where m.number = :number", Coupon.class)
                 .setParameter("number", number)
                 .getResultList();
-        if (result != null)
+        if (result.isEmpty())
             return false;
         return true;
     }

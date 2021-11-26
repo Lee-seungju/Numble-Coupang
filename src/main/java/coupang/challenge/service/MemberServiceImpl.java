@@ -46,9 +46,9 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public boolean checkPass(HttpServletRequest httpServletRequest, HttpSession session) {
+    public boolean checkPass(HttpServletRequest httpServletRequest, String memberPass) {
         return httpServletRequest.getParameter("password").
-                equals((memberRepository.getMemberFromSession(session)).getPassword());
+                equals(memberPass);
     }
 
     @Override
@@ -85,29 +85,25 @@ public class MemberServiceImpl implements MemberService {
     public Optional<Member> findOne(Long memberId) { return memberRepository.findById(memberId); }
 
     @Override
-    public void changePass(HttpServletRequest httpServletRequest, HttpSession session) {
-        Member member = (Member)session.getAttribute("member");
+    public void changePass(HttpServletRequest httpServletRequest, Member member) {
         member.setPassword(httpServletRequest.getParameter("nPassword"));
         memberRepository.useMerge(member);
     }
 
     @Override
-    public void changeEmail(HttpServletRequest httpServletRequest, HttpSession session) {
-        Member member = (Member)session.getAttribute("member");
+    public void changeEmail(HttpServletRequest httpServletRequest, Member member) {
         member.setEmail(httpServletRequest.getParameter("Email"));
         memberRepository.useMerge(member);
     }
 
     @Override
-    public void changeUsername(HttpServletRequest httpServletRequest, HttpSession session) {
-        Member member = memberRepository.getMemberFromSession(session);
+    public void changeUsername(HttpServletRequest httpServletRequest, Member member) {
         member.setUsername(httpServletRequest.getParameter("Username"));
         memberRepository.useMerge(member);
     }
 
     @Override
-    public void changePhone(HttpServletRequest httpServletRequest, HttpSession session) {
-        Member member = memberRepository.getMemberFromSession(session);
+    public void changePhone(HttpServletRequest httpServletRequest, Member member) {
         member.setPhone_number(httpServletRequest.getParameter("Phone"));
         memberRepository.useMerge(member);
     }

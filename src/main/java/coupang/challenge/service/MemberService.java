@@ -13,12 +13,12 @@ public interface MemberService {
     void login(LoginForm form, HttpSession session);
     void logout(HttpSession session);
     boolean join(MemberForm member);
-    boolean checkPass(HttpServletRequest httpServletRequest, HttpSession session);
+    boolean checkPass(HttpServletRequest httpServletRequest, String memberPass);
     Member changeMembership(Object m);
     List<Member> findMembers();
     Optional<Member> findOne(Long memberId);
-    void changePass(HttpServletRequest httpServletRequest, HttpSession session);
-    void changeEmail(HttpServletRequest httpServletRequest, HttpSession session);
-    void changeUsername(HttpServletRequest httpServletRequest, HttpSession session);
-    void changePhone(HttpServletRequest httpServletRequest, HttpSession session);
+    void changePass(HttpServletRequest httpServletRequest, Member member);
+    void changeEmail(HttpServletRequest httpServletRequest, Member member);
+    void changeUsername(HttpServletRequest httpServletRequest, Member member);
+    void changePhone(HttpServletRequest httpServletRequest, Member member);
 }

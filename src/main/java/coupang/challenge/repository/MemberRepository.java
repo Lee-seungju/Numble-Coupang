@@ -15,6 +15,5 @@ public interface MemberRepository {
     Optional<Member> findById(Long memberId);
     Optional<Member> findByEmail(String email);
     List<Member> findAll();
-    Member getMemberFromSession(HttpSession session);
     void makeNew(MemberForm form);
 }

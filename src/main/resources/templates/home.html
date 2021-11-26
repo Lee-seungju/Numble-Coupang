@@ -6,6 +6,14 @@
 <div class="container">
     <div>
         <h1>Coupang</h1>
+        <div>
+            <form name="search_product" action="/product/search" method="post">
+                <input type="text" id="search" name="search">
+                <button>
+                    <span>검색하기</span>
+                </button>
+            </form>
+        </div>
         <div th:if="${session.member eq null}">
             <p>
             <button onclick="location.href = 'member/new'">회원 가입</button>

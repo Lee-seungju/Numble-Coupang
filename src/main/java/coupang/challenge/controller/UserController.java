@@ -1,6 +1,9 @@
 package coupang.challenge.controller;
 
+import coupang.challenge.data.Coupon;
+import coupang.challenge.data.Member;
 import coupang.challenge.data.Message;
+import coupang.challenge.form.CouponViewForm;
 import coupang.challenge.form.DeliveryForm;
 import coupang.challenge.service.CouponService;
 import coupang.challenge.service.DeliveryService;
@@ -12,12 +15,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 public class UserController {
 
-    private DeliveryService deliveryService;
-    private CouponService couponService;
+    private final DeliveryService deliveryService;
+    private final CouponService couponService;
 
     @Autowired
     public UserController(DeliveryService deliveryService, CouponService couponService) {
@@ -35,7 +39,7 @@ public class UserController {
         ModelAndView mav = new ModelAndView("user/deliveryList");
         if (session.getAttribute("member") == null)
             return mav;
-        mav.addObject("delivery", deliveryService.sortMainDelivery(session));
+        mav.addObject("delivery", deliveryService.sortMainDelivery(((Member)session.getAttribute("member")).getId()));
         return mav;
     }
 
@@ -47,7 +51,8 @@ public class UserController {
 
     @PostMapping("user/deliveryForm")
     public String AddDelivery(HttpSession session, DeliveryForm deliveryForm) {
-        deliveryService.addOrChange(session.getAttribute("delivery"), deliveryForm, session);
+        deliveryService.addOrChange(session.getAttribute("delivery"), deliveryForm,
+                ((Member)session.getAttribute("member")).getId());
         session.removeAttribute("delivery");
         return "redirect:/user/showDList";
     }
@@ -73,7 +78,8 @@ public class UserController {
         ModelAndView mav = new ModelAndView("user/couponForm");
         if (session.getAttribute("member") == null)
             return mav;
-        mav.addObject("coupon", couponService.searchCoupon(session));
+        List<Coupon> coupons = couponService.searchCoupon(((Member)session.getAttribute("member")).getId());
+        mav.addObject("coupon", coupons);
         return mav;
     }
 
@@ -81,7 +87,7 @@ public class UserController {
     public ModelAndView addCoupon(HttpServletRequest httpServletRequest, HttpSession session) {
         ModelAndView mav = new ModelAndView("Message");
         String couponNum = httpServletRequest.getParameter("coupon_num");
-        if (couponService.addCouponToMember(couponNum, session) == false)
+        if (couponService.addCouponToMember(couponNum, ((Member)session.getAttribute("member")).getId()) == false)
             mav.addObject("data", new Message("쿠폰 번호가 맞지 않거나 이미 등록된 쿠폰입니다.", "/user/coupon"));
         else
             mav.addObject("data", new Message("쿠폰을 등록하였습니다.", "/user/coupon"));

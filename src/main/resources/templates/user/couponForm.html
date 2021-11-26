@@ -17,24 +17,16 @@
             document.add_coupon.submit();
         }
         function showCan() {
-            for(var i = 0; i<4; i++) {
-                if (document.getElementById("can" + i) != null)
-                    document.getElementById("can" + i.toString()).style.display = "block";
-                if (document.getElementById("use" + i) != null)
-                    document.getElementById("use" + i.toString()).style.display = "none";
-            }
+            document.getElementById("can").style.display = "";
+            document.getElementById("use").style.display = "none";
         }
         function showEnd() {
-            for(var i = 0; i<4; i++) {
-                if (document.getElementById("can" + i) != null)
-                    document.getElementById("can" + i.toString()).style.display = "none";
-                if (document.getElementById("use" + i) != null)
-                    document.getElementById("use" + i.toString()).style.display = "block";
-            }
+            document.getElementById("can").style.display = "none";
+            document.getElementById("use").style.display = "";
         }
     </script>
 </head>
-<body>
+<tbody>
 <th:block th:if="${session.member eq null}">
     <script>
         top.alert("로그인이 필요한 서비스입니다.");
@@ -80,55 +72,48 @@
                 </button>
             </div>
         </div>
-        <div>
+        <div  style="display:inline-block">
             <button onclick="showCan()">
-                <span>
-                    <h3>사용가능 쿠폰</h3>
-                </span>
-            </button>
-            <button onclick="showEnd()">
-                <span>
-                    <h3>만료 쿠폰</h3>
-                </span>
+                <i></i>
+                <h2>사용가능</h2>
             </button>
         </div>
-            <div><table>
-                <colgroup>
-                    <col><col>
-                    <col><col>
-                    <col></colgroup>
+        <div  style="display:inline-block">
+            <button onclick="showEnd()"><i></i>
+                <h2>사용완료/기간만료</h2>
+            </button>
+        </div>
+        <div>
+            <table style="width:500px" border="1">
+                <colgroup span="3"></colgroup>
                 <thead>
-                <tr>
-                    <th>쿠폰명 | </th>
-                    <th>할인액 | </th>
-                    <th>사용조건 | </th>
-                    <th>유효기간</th>
-                </tr></thead>
-                <th:block th:unless="${#lists.isEmpty(coupon)}">
-                    <tr th:each="d : ${coupon}" th:if="${d.use_coupon == false}">
-                        <tbody>
-                            <td>
-                                <th th:text="${d.name}" id="can0"></th>
-                                <th th:text="${d.discount}" id="can1">원</th>
-                                <th th:text="${d.if_buy}" id="can2">원 이상 구매시</th>
-                                <th th:text="${d.validity}" id="can3"></th>
-                            </td>
-                        </tbody>
+                    <tr>
+                        <th>쿠폰명</th>
+                        <th>할인액</th>
+                        <th>사용조건</th>
+                        <th>유효기간</th>
                     </tr>
-                    <tr th:each="d : ${coupon}" th:if="${d.use_coupon == true}">
-                        <tbody>
-                        <td>
-                        <th th:text="${d.name}" id="use0" style="display:none"></th>
-                        <th th:text="${d.discount}" id="use1" style="display:none">원</th>
-                        <th th:text="${d.if_buy}" id="use2" style="display:none">원 이상 구매시</th>
-                        <th th:text="${d.validity}" id="use3" style="display:none"></th>
-                        </td>
-                        </tbody>
-                    </tr>
-                </th:block>
-            </table>
-            <div>-----------------------------------------------------</div>
-            </div>
+                </thead>
+            <th:block th:unless="${#lists.isEmpty(coupon)}">
+                <tbody id="can">
+                <tr th:each="data : ${coupon}" th:if="${data.use_coupon == false}">
+                    <td th:text="${data.name}" id="can0"></td>
+                    <td th:text="${data.discount}" id="can1">원</td>
+                    <td th:text="${data.if_buy}" id="can2">원 이상 구매시</td>
+                    <td th:text="${data.validity}" id="can3"></td>
+                </tr>
+                </tbody>
+                <tbody id="use">
+                <tr th:each="data : ${coupon}" th:if="${data.use_coupon == true}" style="display: none">
+                    <td th:text="${data.name}" id="use0"></td>
+                    <td th:text="${data.discount}" id="use1">원</td>
+                    <td th:text="${data.if_buy}" id="use2">원 이상 구매시</td>
+                    <td th:text="${data.validity}" id="use3"></td>
+                </tr>
+                </tbody>
+            </th:block>
+        </table>
+        </div>
     </table>
 </th:block>
 </body>

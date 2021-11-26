@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface CouponService {
     void addCoupon(CouponForm couponForm);
-    boolean addCouponToMember(String couponNumber, HttpSession session);
-    List<Coupon> searchCoupon(HttpSession httpsession);
+    boolean addCouponToMember(String couponNumber, Long memberId);
+    List<Coupon> searchCoupon(Long memberId);
 }

@@ -54,11 +54,6 @@ public class MemberRepositoryImpl implements MemberRepository{
     }
 
     @Override
-    public Member getMemberFromSession(HttpSession session) {
-        return (Member)session.getAttribute("member");
-    }
-
-    @Override
     public void makeNew(MemberForm form) {
         Member member = new Member();
         member.setEmail(form.getEmail());

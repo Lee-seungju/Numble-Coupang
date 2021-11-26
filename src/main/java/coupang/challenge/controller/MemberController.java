@@ -1,5 +1,6 @@
 package coupang.challenge.controller;
 
+import coupang.challenge.data.Member;
 import coupang.challenge.data.Message;
 import coupang.challenge.form.LoginForm;
 import coupang.challenge.form.MemberForm;
@@ -43,7 +44,7 @@ public class MemberController {
     public String moveLoginForm() { return "/member/loginForm"; }
 
     @PostMapping("/member/login")
-    public ModelAndView loginCheck(LoginForm form, HttpSession session) {
+    public ModelAndView login(LoginForm form, HttpSession session) {
         memberService.login(form, session);
         ModelAndView mav = new ModelAndView();
         if (session.getAttribute("member") == null) {
@@ -73,7 +74,7 @@ public class MemberController {
     @PostMapping("/member/check")
     public ModelAndView checkPass(HttpServletRequest httpServletRequest, HttpSession session) {
         ModelAndView mav = new ModelAndView();
-        if (memberService.checkPass(httpServletRequest, session) == true)
+        if (memberService.checkPass(httpServletRequest, ((Member)session.getAttribute("member")).getPassword()) == true)
             mav.setViewName("user/editPersonalInfo");
         else {
             mav.setViewName("Message");
@@ -85,8 +86,8 @@ public class MemberController {
     @PostMapping("/member/passCheck")
     public ModelAndView checkPassAndEdit(HttpServletRequest httpServletRequest, HttpSession session) {
         ModelAndView mav = new ModelAndView("Message");
-        if (memberService.checkPass(httpServletRequest, session) == true) {
-            memberService.changePass(httpServletRequest, session);
+        if (memberService.checkPass(httpServletRequest, ((Member)session.getAttribute("member")).getPassword()) == true) {
+            memberService.changePass(httpServletRequest, (Member)session.getAttribute("member"));
             mav.addObject("data", new Message("비밀번호가 변경되었습니다.", "../user/canEdit"));
         } else {
             mav.addObject("data", new Message("현재 비밀번호가 맞지 않습니다.", "../user/canEdit"));
@@ -96,19 +97,19 @@ public class MemberController {
 
     @PostMapping("/member/changeEmail")
     public String changeEmail(HttpServletRequest httpServletRequest, HttpSession session) {
-        memberService.changeEmail(httpServletRequest, session);
+        memberService.changeEmail(httpServletRequest, (Member)session.getAttribute("member"));
         return "redirect:/user/canEdit";
     }
 
     @PostMapping("/member/changeUsername")
     public String changeUsername(HttpServletRequest httpServletRequest, HttpSession session) {
-        memberService.changeUsername(httpServletRequest, session);
+        memberService.changeUsername(httpServletRequest, (Member)session.getAttribute("member"));
         return "redirect:/user/canEdit";
     }
 
     @PostMapping("/member/changePhone")
     public String changePhone(HttpServletRequest httpServletRequest, HttpSession session) {
-        memberService.changePhone(httpServletRequest, session);
+        memberService.changePhone(httpServletRequest, (Member)session.getAttribute("member"));
         return "redirect:/user/canEdit";
     }
 }
